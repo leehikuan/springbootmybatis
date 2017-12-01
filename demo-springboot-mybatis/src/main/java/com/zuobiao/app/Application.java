@@ -9,11 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableAutoConfiguration 
 @SpringBootApplication
 @MapperScan("com.zuobiao.app.dao")
-public class Application { 
+public class Application {
 	private static Logger logger = Logger.getLogger(Application.class);
 	 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-		System.out.println("启动成功！");
 	}
 }
