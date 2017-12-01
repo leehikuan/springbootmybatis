@@ -5,6 +5,6 @@ package com.zuobiao.app.iservice;
 * 类说明
 */
 public interface IGeographyService {
-	public String ReadExcelGeo(int ColumnNumOfAddr,String filePath,int firstDataRowNum);
-	public String ReadExcelReGeo(int ColumnNumOfLocation,String filePath,int firstDataRowNum);
+	public boolean ReadExcelGeo(int ColumnNumOfAddr,String filePath,int firstDataRowNum);
+	public boolean ReadExcelReGeo(int ColumnNumOfLocation,String filePath,int firstDataRowNum);
 }

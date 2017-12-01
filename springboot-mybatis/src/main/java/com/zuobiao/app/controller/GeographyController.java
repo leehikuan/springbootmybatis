@@ -1,24 +1,32 @@
 package com.zuobiao.app.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSON;
 import com.zuobiao.app.entity.Person;
 import com.zuobiao.app.iservice.IGeographyService;
 import com.zuobiao.app.iservice.IPersonService;
@@ -30,52 +38,32 @@ import com.zuobiao.app.iservice.IPersonService;
 */
 @RestController
 public class GeographyController {
-	@Value("${location}")
-	private String location;
+//	@Value("${location}")
+//	private String location;
 	@Autowired
 	private IGeographyService geographyService;
 	@Autowired
 	private IPersonService personService;
 	
-	@GetMapping(value="/getPersonById/{id}")
-	public Person getPersonById(@PathVariable("id") Integer id) {
-		Person p=personService.getPersonById(id);
-		return p;
-	}
-	@GetMapping(value="/addAndUpdate/{id}")
-	public Person addAndUpdate(@PathVariable("id") Integer id) {
-		Person p=new Person();
-//		p.setId(id);
-		personService.addAndUpdateByID(p);
-		return p;
-	}
-	@RequestMapping("/")
-	public ModelAndView index(Model model) {
-		ModelAndView mv = new ModelAndView("index");
-		Person single = new Person("aa", "11");
-        List<Person> people = new ArrayList<Person>();
-        Person p1 = new Person("zhangsan", 11+"");
-        Person p2 = new Person("lisi", "22");
-        Person p3 = new Person("wangwu", "33");
-        people.add(p1);
-        people.add(p2);
-        people.add(p3);
-        people=personService.findAll();
-        model.addAttribute("singlePerson", single);
-        model.addAttribute("people", people);
-        return mv;
-    }
-	@GetMapping(value = "uploadFile")
-	public String cs2(@RequestParam("file") MultipartFile file,
+	@PostMapping(value = "/uploadFile")
+	public String uploadFile(@RequestParam("file") MultipartFile file,
 			@RequestParam("ColumnNum") Integer ColumnNum,
 			@RequestParam("firstDataRowNum") Integer firstDataRowNum,
 			@RequestParam("type") String type) throws Exception {
+		Map <String,String>map=new HashMap<String,String>();
 		long startTime = System.currentTimeMillis();
+		String pa=System.getProperty("user.dir");
+		System.out.println(pa);
+		String location=pa+"/src/main/resources/";
 		System.out.println("fileName：" + file.getOriginalFilename());
 		OutputStream os=null;
 		InputStream is=null;
+//		String dirPath=location +File.separator;
+		String path=location.replace("\\", "/") + new Date().getTime()+ file.getOriginalFilename();
 		try {
-			String path=location + new Date().getTime() + file.getOriginalFilename();
+//			if(!new File(dirPath).exists()) {
+//				new File(dirPath).mkdirs();
+//			}
 			// 获取输出流
 			os = new FileOutputStream(path);
 			// 获取输入流 CommonsMultipartFile 中可以直接得到文件的流
@@ -92,8 +80,36 @@ public class GeographyController {
 			os.close();
 			is.close();
 		}
+		boolean res=false;
+		//地理编码
+//		if("1".equals(type)) {
+//			res=geographyService.ReadExcelGeo(ColumnNum, path, firstDataRowNum);
+//		}else {
+//			//逆地理编码
+//			res=geographyService.ReadExcelReGeo(ColumnNum, path, firstDataRowNum);
+//		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("方法一的运行时间：" + String.valueOf(endTime - startTime) + "ms");
+		map.put("status", "success");
+		map.put("path", path);
+		return JSON.toJSONString(map);
+	}
+	@PostMapping(value="/change")
+	public String change(
+			@RequestParam("ColumnNum") Integer ColumnNum,
+			@RequestParam("firstDataRowNum") Integer firstDataRowNum,
+			@RequestParam("type") String type,
+			@RequestParam("path") String path) {
+		//地理编码
+		boolean res=false;
+		if("1".equals(type)) {
+			res=geographyService.ReadExcelGeo(ColumnNum, path, firstDataRowNum);
+		}else {
+			//逆地理编码
+			res=geographyService.ReadExcelReGeo(ColumnNum, path, firstDataRowNum);
+		}	
+		
 		return "success";
+		
 	}
 }

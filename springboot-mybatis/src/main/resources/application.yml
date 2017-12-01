@@ -14,6 +14,10 @@ spring:
     view:
       prefix: /
       suffix: .jsp
+  http:
+    multipart:
+      max-file-size: 20Mb
+      max-request-size: 20Mb
 #    static-path-pattern: /WEB-INF/**
 #  thymeleaf:
 #    content-type: text/html

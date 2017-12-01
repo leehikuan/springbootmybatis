@@ -34,8 +34,9 @@ import jxl.write.biff.RowsExceededException;
 public class GeographyService implements IGeographyService {
 
 	@Override
-	public String ReadExcelGeo(int ColumnNumOfAddr,String filePath,int firstDataRowNum) {
+	public boolean ReadExcelGeo(int ColumnNumOfAddr,String filePath,int firstDataRowNum) {
 		// TODO Auto-generated method stub
+		boolean finaRes=true;
 		WritableWorkbook wwb=null;
 		Workbook wb=null;
 		try {
@@ -90,31 +91,38 @@ public class GeographyService implements IGeographyService {
 			}
 			wwb.write();
 		} catch (BiffException e) {
+			finaRes=false;
 			e.printStackTrace();
 		} catch (RowsExceededException e) {
+			finaRes=false;
 			e.printStackTrace();
 		} catch (WriteException e) {
+			finaRes=false;
 			e.printStackTrace();
 		} catch (IOException e) {
+			finaRes=false;
 			e.printStackTrace();
 		}finally {
 			try {
 				wwb.close();
 				wb.close();
 			} catch (WriteException e) {
+				finaRes=false;
 				System.out.println("关闭异常");
 				e.printStackTrace();
 			} catch (IOException e) {
+				finaRes=false;
 				System.out.println("关闭异常");
 				e.printStackTrace();
 			}
 			
 		}
-		return null;
+		return finaRes;
 	}
 
 	@Override
-	public String ReadExcelReGeo(int ColumnNumOfLocation,String filePath,int firstDataRowNum) {
+	public boolean ReadExcelReGeo(int ColumnNumOfLocation,String filePath,int firstDataRowNum) {
+		boolean finaRes=true;
 		// TODO Auto-generated method stub
 		WritableWorkbook wwb = null;
 		Workbook wb = null;
@@ -232,26 +240,32 @@ public class GeographyService implements IGeographyService {
 			}
 			wwb.write();
 		} catch (IOException e) {
+			finaRes=false;
 			e.printStackTrace();
 		} catch (BiffException e) {
+			finaRes=false;
 			e.printStackTrace();
 		} catch (RowsExceededException e) {
+			finaRes=false;
 			e.printStackTrace();
 		} catch (WriteException e) {
+			finaRes=false;
 			e.printStackTrace();
 		}finally {
 			try {
 				wwb.close();
 				wb.close();
 			} catch (WriteException e) {
+				finaRes=false;
 				System.out.println("关闭异常");
 				e.printStackTrace();
 			} catch (IOException e) {
+				finaRes=false;
 				System.out.println("关闭异常");
 				e.printStackTrace();
 			}
 		}
-		return null;
+		return finaRes;
 	}
 
 }
