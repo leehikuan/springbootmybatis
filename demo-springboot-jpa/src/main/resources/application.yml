@@ -1,0 +1,22 @@
+#server: 
+#  port: 8081
+#  context-path: /program
+#score: B
+#age: 18
+#person: 
+#  score: B
+#  age: 18
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/test
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+      

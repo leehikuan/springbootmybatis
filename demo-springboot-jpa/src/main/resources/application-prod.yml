@@ -1,0 +1,8 @@
+server: 
+  port: 8081
+  context-path: /program
+score: F
+age: 18
+person: 
+  score: F
+  age: 18
